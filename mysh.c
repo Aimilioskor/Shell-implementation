@@ -22,16 +22,12 @@ int pipes = 0;
 char *builtin_str[] = { "cd", "exit" };
 
 
-
 int main(int argc, char **argv) {
 
 	make_shell();
 
 	return (0);
 }
-
-
-
 
 
 void make_shell(void) {
@@ -70,7 +66,7 @@ char **split_ln(char *line) {
 	int position = 0;
 	char **tokens = malloc(bufsize * sizeof(char*));
 	char *token;
-	//pipe var will help finding how many pipes are there in the users command
+//pipe var will help finding how many pipes are there in the users command
 	char pipe_var = '|';
 
 	if (!tokens) {
@@ -151,7 +147,7 @@ int exit_func(char **args) {
 }
 
 int do_command(char **args, int pipes) {
-	// number of commands the user gives
+// number of commands the user gives
 	const int commandnum = pipes + 1;
 	int i = 0;
 
@@ -171,11 +167,11 @@ int do_command(char **args, int pipes) {
 	int b = 0;
 	int s = 1;
 	int place;
-	// array poy periexei poy ksekinaei i epomeni entoli meta to pipe
+// array to store where the next command starts
 	int next_start[10];
 	next_start[0] = 0;
 
-	//if we find a pipe delete it and hold the command in the next position inside next_start[s]
+//if we find a pipe delete it and hold the command in the next position inside next_start[s]
 	while (args[b] != NULL) {
 		if (!strcmp(args[b], "|")) {
 			args[b] = NULL;
@@ -186,11 +182,11 @@ int do_command(char **args, int pipes) {
 	}
 
 	for (i = 0; i < commandnum; ++i) {
-		// variable place will show us where in our args to call execvp
+// variable place will show us where in our args to call execvp
 		place = next_start[i];
 		pid = fork();
 		if (pid == 0) {
-			//if not last command
+//if not last command
 			if (i < pipes) {
 				if (dup2(pipefds[a + 1], 1) < 0) {
 					perror("dup2");
@@ -198,7 +194,7 @@ int do_command(char **args, int pipes) {
 				}
 			}
 
-			//if not first command and a!= 2*pipes
+//if not first command and a!= 2*pipes
 			if (a != 0) {
 				if (dup2(pipefds[a - 2], 0) < 0) {
 					perror("dup2");
@@ -211,7 +207,7 @@ int do_command(char **args, int pipes) {
 				close(pipefds[z]);
 			}
 
-			// The commandnum are executed here,
+// The commandnum are executed here,
 			if (execvp(args[place], args + place) < 0) {
 				perror(*args);
 				exit(EXIT_FAILURE);
